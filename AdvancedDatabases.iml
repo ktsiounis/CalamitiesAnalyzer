@@ -28,5 +28,6 @@
         <jarDirectory url="file://$USER_HOME$/Downloads/mysql-connector-java-8.0.15/mysql-connector-java-8.0.15" recursive="false" />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="mysql-connector-java-8.0.15" level="project" />
   </component>
 </module>

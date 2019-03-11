@@ -14,10 +14,9 @@ public class DBService {
     private static final String PASS = "devH3r0@2019";
 
     private static Properties connectionProps = new Properties();
-    private static Random rnd = new Random();
     private static Connection connection = null;
 
-    //Connect to Cloud DB
+    //Connect to Cloud SQL DB
     public static void dbConnect() {
         connectionProps.setProperty("user", USER);
         connectionProps.setProperty("password", PASS);
@@ -25,13 +24,13 @@ public class DBService {
         try {
             Class.forName(JDBC_DRIVER).newInstance();
         } catch (Exception e) {
-            System.out.println("Where is your Oracle JDBC Driver?");
+            System.out.println("Where is your MySQL JDBC Driver?");
             e.printStackTrace();
         }
 
-        System.out.println("Oracle JDBC Driver Registered!");
+        System.out.println("MySQL JDBC Driver Registered!");
 
-        //Establish the Oracle Connection using Connection String
+        //Establish the MySQL Connection using Connection String
         try {
             connection = DriverManager.getConnection(DB_URL, connectionProps);
             connection.setAutoCommit(false);
@@ -59,7 +58,7 @@ public class DBService {
         ResultSet resultSet = null;
         CachedRowSetImpl crs = null;
         try {
-            //Connect to DB (Establish Oracle Connection)
+            //Connect to DB (Establish MySQL Connection)
             dbConnect();
             System.out.println("Select statement: " + queryStmt + "\n");
 
