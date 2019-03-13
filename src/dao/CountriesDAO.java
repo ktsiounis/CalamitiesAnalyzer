@@ -1,5 +1,7 @@
 package dao;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import utils.DBService;
 
 import java.sql.ResultSet;
@@ -7,7 +9,9 @@ import java.sql.SQLException;
 
 public class CountriesDAO {
 
-    public static void getAllCountries(boolean orderDesc) {
+    public static ObservableList<String> getAllCountries(boolean orderDesc) {
+
+        ObservableList<String> countries = FXCollections.observableArrayList();
 
         try {
             String sql = "SELECT * \n"
@@ -20,6 +24,7 @@ public class CountriesDAO {
 
             while (rs.next()) {
                 String country = rs.getString("name");
+                countries.add(country);
 
                 System.out.println("Country: " + country);
             }
@@ -31,6 +36,8 @@ public class CountriesDAO {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        return countries;
 
     }
 
