@@ -2,34 +2,87 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<GridPane alignment="CENTER" hgap="10" prefHeight="111.0" prefWidth="373.0" vgap="10" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MainController">
-   <columnConstraints>
-      <ColumnConstraints />
-      <ColumnConstraints />
-   </columnConstraints>
-   <rowConstraints>
-      <RowConstraints />
-      <RowConstraints />
-   </rowConstraints>
+<VBox alignment="CENTER" prefHeight="321.0" prefWidth="482.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MainController">
    <children>
-      <Button fx:id="runBtn" mnemonicParsing="false" onAction="#onRunClicked" text="Run" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1">
-         <font>
-            <Font size="17.0" />
-         </font>
-         <GridPane.margin>
-            <Insets bottom="10.0" top="30.0" />
-         </GridPane.margin>
-      </Button>
-      <Label alignment="CENTER" prefHeight="25.0" prefWidth="360.0" text="Click to run some basic queries" textAlignment="CENTER" textOverrun="CENTER_ELLIPSIS" wrapText="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+      <Label alignment="CENTER" prefHeight="25.0" prefWidth="360.0" text="Click to run some basic queries" textAlignment="CENTER" textOverrun="CENTER_ELLIPSIS" wrapText="true">
          <font>
             <Font size="16.0" />
          </font>
+         <VBox.margin>
+            <Insets top="10.0" />
+         </VBox.margin>
       </Label>
+      <HBox alignment="CENTER" prefHeight="72.0" prefWidth="360.0">
+         <children>
+            <Label text="Choose a year:">
+               <font>
+                  <Font size="18.0" />
+               </font>
+               <HBox.margin>
+                  <Insets right="20.0" />
+               </HBox.margin>
+            </Label>
+            <ChoiceBox fx:id="yearsChoiceBox" prefWidth="150.0" />
+         </children>
+         <VBox.margin>
+            <Insets />
+         </VBox.margin>
+      </HBox>
+      <HBox alignment="CENTER" prefHeight="72.0" prefWidth="360.0">
+         <children>
+            <Label text="Choose a country:">
+               <font>
+                  <Font size="18.0" />
+               </font>
+               <HBox.margin>
+                  <Insets right="20.0" />
+               </HBox.margin>
+            </Label>
+            <ChoiceBox fx:id="countriesChoiceBox" prefWidth="150.0" />
+         </children>
+      </HBox>
+      <HBox alignment="CENTER" prefHeight="72.0" prefWidth="360.0">
+         <children>
+            <Label text="Choose event:">
+               <font>
+                  <Font size="18.0" />
+               </font>
+               <HBox.margin>
+                  <Insets right="20.0" />
+               </HBox.margin>
+            </Label>
+            <ChoiceBox fx:id="eventsChoiceBox" prefWidth="150.0" />
+         </children>
+      </HBox>
+      <HBox alignment="CENTER" prefHeight="72.0" prefWidth="360.0">
+         <children>
+            <Label text="Choose type of graph:">
+               <font>
+                  <Font size="18.0" />
+               </font>
+               <HBox.margin>
+                  <Insets right="20.0" />
+               </HBox.margin>
+            </Label>
+            <ChoiceBox fx:id="graphTypeChoiceBox" prefWidth="150.0" />
+         </children>
+      </HBox>
+      <Button fx:id="runBtn" alignment="CENTER" mnemonicParsing="false" onAction="#onRunClicked" text="Run" textAlignment="CENTER">
+         <font>
+            <Font size="17.0" />
+         </font>
+         <VBox.margin>
+            <Insets bottom="10.0" />
+         </VBox.margin>
+      </Button>
    </children>
-</GridPane>
+   <padding>
+      <Insets left="10.0" right="10.0" />
+   </padding>
+</VBox>

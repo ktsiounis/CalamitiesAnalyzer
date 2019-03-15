@@ -20,9 +20,6 @@ public class Year {
 
     @Override
     public String toString() {
-        return "Year{" +
-                "id=" + id +
-                ", year=" + year +
-                '}';
+        return String.valueOf(this.year);
     }
 }

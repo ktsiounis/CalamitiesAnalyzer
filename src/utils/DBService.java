@@ -92,4 +92,8 @@ public class DBService {
         return crs;
     }
 
+    public static Connection getConnection() {
+        return connection;
+    }
+
 }
