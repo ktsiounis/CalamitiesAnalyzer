@@ -36,20 +36,9 @@ public class Disaster {
                 "id=" + id +
                 ", country=" + country +
                 ", year=" + year +
-                ", disaster=" + disaster +
+                ", disaster type=" + disaster +
                 ", affected=" + affected +
                 ", deaths=" + deaths +
                 '}';
     }
-}
-
-enum DisasterType {
-    DROUGHT,
-    EARTHQUAKE,
-    EPIDEMIC,
-    EXTREME_TEMPERATURE,
-    FLOOD,
-    PLANE_CRASH,
-    STORM,
-    TSUNAMI
 }
