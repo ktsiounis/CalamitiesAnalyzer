@@ -1,12 +1,18 @@
 package controllers;
 
-import com.sun.tools.javac.util.List;
 import dao.CountriesDAO;
+import dao.DisasterDAO;
 import dao.YearsDAO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
+import javafx.scene.chart.*;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+import models.Disaster;
+import models.DisasterType;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -19,8 +25,6 @@ public class MainController {
     private ChoiceBox countriesChoiceBox;
     @FXML
     private ChoiceBox eventsChoiceBox;
-    @FXML
-    private ChoiceBox graphTypeChoiceBox;
 
     @FXML
     void initialize() {
@@ -41,13 +45,6 @@ public class MainController {
         events.add("Tsunamis");
 
         eventsChoiceBox.setItems(events);
-
-        ObservableList<String> graphTypes = FXCollections.observableArrayList();
-        graphTypes.add("Timeline / Trendline");
-        graphTypes.add("Scatter Plot");
-        graphTypes.add("Bar Chart");
-
-        graphTypeChoiceBox.setItems(graphTypes);
     }
 
     @FXML
@@ -56,6 +53,45 @@ public class MainController {
 
         System.out.println("Year selected: " + yearsChoiceBox.getSelectionModel().getSelectedItem());
         System.out.println("Country selected: " + countriesChoiceBox.getSelectionModel().getSelectedItem());
+
+        String countrySelected = countriesChoiceBox.getSelectionModel().getSelectedItem().toString();
+
+        ObservableList<Disaster> disasters = FXCollections.observableArrayList();
+
+        switch (eventsChoiceBox.getSelectionModel().getSelectedItem().toString().toLowerCase()) {
+            case "epidemics":
+               disasters = DisasterDAO.getDisasterForCountry(DisasterType.EPIDEMIC, countrySelected);
+               break;
+        }
+
+        NumberAxis xAxis = new NumberAxis(1800, 2020, 10);
+        xAxis.setLabel("Years");
+
+        NumberAxis yAxis = new NumberAxis();
+        yAxis.setLabel("Deaths");
+
+        LineChart barChart = new LineChart(xAxis, yAxis);
+
+        XYChart.Series dataSeries1 = new XYChart.Series();
+        dataSeries1.setName("No of deaths in a year");
+
+        for (Disaster disaster : disasters) {
+            System.out.println(disaster.getYear().getYear() + " " + disaster.getDeaths());
+            dataSeries1.getData().add(new XYChart.Data(disaster.getYear().getYear(), disaster.getDeaths()));
+        }
+
+        barChart.getData().add(dataSeries1);
+
+        VBox vbox = new VBox(barChart);
+
+        Scene scene = new Scene(vbox, 400, 200);
+
+        Stage primaryStage = new Stage();
+        primaryStage.setScene(scene);
+        primaryStage.setHeight(300);
+        primaryStage.setWidth(1200);
+
+        primaryStage.show();
 
     }
 
