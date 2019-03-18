@@ -92,7 +92,7 @@ public class DisasterDAO {
     private static StringBuilder buildQuery(DisasterType type) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("SELECT d.id, d.country_id, d.year_id, d.affected, d.deaths, y.year, c.name\n");
-        stringBuilder.append("FROM " + Misc.getTableName(type) + " ");
+        stringBuilder.append("FROM " + type.getTableName() + " ");
         stringBuilder.append("as d, countries as c, years as y\n");
         stringBuilder.append("WHERE d.country_id = c.id AND d.year_id = y.id");
 

@@ -60,19 +60,6 @@
             <ChoiceBox fx:id="eventsChoiceBox" prefWidth="150.0" />
          </children>
       </HBox>
-      <HBox alignment="CENTER" prefHeight="72.0" prefWidth="360.0">
-         <children>
-            <Label text="Choose type of graph:">
-               <font>
-                  <Font size="18.0" />
-               </font>
-               <HBox.margin>
-                  <Insets right="20.0" />
-               </HBox.margin>
-            </Label>
-            <ChoiceBox fx:id="graphTypeChoiceBox" prefWidth="150.0" />
-         </children>
-      </HBox>
       <Button fx:id="runBtn" alignment="CENTER" mnemonicParsing="false" onAction="#onRunClicked" text="Run" textAlignment="CENTER">
          <font>
             <Font size="17.0" />
