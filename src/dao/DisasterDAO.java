@@ -11,41 +11,24 @@ import utils.Misc;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class DisasterDAO {
 
+    private static ObservableList<Disaster> disasters = FXCollections.observableArrayList();
+
     public static ObservableList<Disaster> getAllForDisaster(DisasterType type) {
 
-        ObservableList<Disaster> disasters = FXCollections.observableArrayList();
+//        ObservableList<Disaster> disasters = FXCollections.observableArrayList();
 
         try {
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("SELECT d.id, d.country_id, d.year_id, d.affected, d.deaths, y.year, c.name\n");
-            stringBuilder.append("FROM ");
-            stringBuilder.append(Misc.getTableName(type));
-            stringBuilder.append(" as d, countries as c, years as y\n");
-            stringBuilder.append("WHERE d.country_id = c.id AND d.year_id = y.id;");
+            StringBuilder stringBuilder = buildQuery(type);
+            stringBuilder.append(";");
             String sql = stringBuilder.toString();
 
             ResultSet rs = DBService.dbExecuteQuery(sql);
 
-            while (rs.next()) {
-                int id = rs.getInt("id");
-                int countryID = rs.getInt("country_id");
-                int yearID = rs.getInt("year_id");
-                int affected = rs.getInt("affected");
-                int deaths = rs.getInt("deaths");
-                int year = rs.getInt("year");
-                String country = rs.getString("name");
-
-                disasters.add(new Disaster(id,
-                        new Country(countryID, country),
-                        new Year(yearID, year),
-                        type, affected, deaths));
-
-                System.out.println(country + " " + year + " " + affected + " " + deaths);
-
-            }
+            iterateResultSet(rs, type);
             rs.close();
 
         } catch (Exception e) {
@@ -57,16 +40,12 @@ public class DisasterDAO {
 
     public static ObservableList<Disaster> getDisasterForCountry(DisasterType type, String countryName) {
 
-        ObservableList<Disaster> disasters = FXCollections.observableArrayList();
+//        ObservableList<Disaster> disasters = FXCollections.observableArrayList();
 
         try {
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("SELECT d.id, d.country_id, d.year_id, d.affected, d.deaths, y.year, c.name\n");
-            stringBuilder.append("FROM ");
-            stringBuilder.append(Misc.getTableName(type));
-            stringBuilder.append(" as d, countries as c, years as y\n");
-            stringBuilder.append("WHERE d.country_id = c.id AND d.year_id = y.id\n");
-            stringBuilder.append("AND c.name LIKE ?");
+            StringBuilder stringBuilder = buildQuery(type);
+            stringBuilder.append("\n");
+            stringBuilder.append("AND c.name LIKE ?;");
             String sql = stringBuilder.toString();
 
             DBService.dbConnect();
@@ -74,6 +53,21 @@ public class DisasterDAO {
             pstm.setString(1, "%" + countryName + "%");
             ResultSet rs = pstm.executeQuery();
 
+            iterateResultSet(rs, type);
+
+            DBService.dbDisconnect();
+            rs.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return disasters;
+    }
+
+    private static void iterateResultSet(ResultSet rs, DisasterType type) throws SQLException {
+        disasters.clear();
+        try {
             while (rs.next()) {
                 int id = rs.getInt("id");
                 int countryID = rs.getInt("country_id");
@@ -89,16 +83,20 @@ public class DisasterDAO {
                         type, affected, deaths));
 
                 System.out.println(country + " " + year + " " + affected + " " + deaths);
-
             }
-            DBService.dbDisconnect();
-            rs.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException se) {
+            se.printStackTrace();
         }
+    }
 
-        return disasters;
+    private static StringBuilder buildQuery(DisasterType type) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("SELECT d.id, d.country_id, d.year_id, d.affected, d.deaths, y.year, c.name\n");
+        stringBuilder.append("FROM " + Misc.getTableName(type) + " ");
+        stringBuilder.append("as d, countries as c, years as y\n");
+        stringBuilder.append("WHERE d.country_id = c.id AND d.year_id = y.id");
+
+        return stringBuilder;
     }
 
     public static void main(String[] args) {
