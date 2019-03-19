@@ -17,8 +17,6 @@ public class PopulationDAO {
 
     public static ObservableList<Population> getPopulationForYear(int populationYear) {
 
-//        ObservableList<Population> populationList = FXCollections.observableArrayList();
-
         try {
             StringBuilder stringBuilder = buildQuery();
             stringBuilder.append("AND y.year = ?;");
@@ -27,11 +25,9 @@ public class PopulationDAO {
             DBService.dbConnect();
             PreparedStatement pstm = DBService.getConnection().prepareStatement(sql);
             pstm.setInt(1, populationYear);
-            ResultSet rs = pstm.executeQuery();
 
-            iterateResultSet(rs);
+            iterateResultSet(pstm.executeQuery());
             DBService.dbDisconnect();
-            rs.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -40,8 +36,6 @@ public class PopulationDAO {
     }
 
     public static ObservableList<Population> getPopulationForYearRange(int from, int to) {
-
-//        ObservableList<Population> populationList = FXCollections.observableArrayList();
 
         try {
             StringBuilder stringBuilder = buildQuery();
@@ -52,11 +46,9 @@ public class PopulationDAO {
             PreparedStatement pstm = DBService.getConnection().prepareStatement(sql);
             pstm.setInt(1, from);
             pstm.setInt(2, to);
-            ResultSet rs = pstm.executeQuery();
 
-            iterateResultSet(rs);
+            iterateResultSet(pstm.executeQuery());
             DBService.dbDisconnect();
-            rs.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -66,8 +58,6 @@ public class PopulationDAO {
 
     public static ObservableList<Population> getPopulationForCountry(String name) {
 
-//        ObservableList<Population> populationList = FXCollections.observableArrayList();
-
         try {
             StringBuilder stringBuilder = buildQuery();
             stringBuilder.append("AND c.name LIKE ?;");
@@ -76,11 +66,9 @@ public class PopulationDAO {
             DBService.dbConnect();
             PreparedStatement pstm = DBService.getConnection().prepareStatement(sql);
             pstm.setString(1, "%" + name + "%");
-            ResultSet rs = pstm.executeQuery();
 
-            iterateResultSet(rs);
+            iterateResultSet(pstm.executeQuery());
             DBService.dbDisconnect();
-            rs.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -106,6 +94,8 @@ public class PopulationDAO {
             }
         } catch (SQLException se) {
             se.printStackTrace();
+        } finally {
+            rs.close();
         }
     }
 

@@ -14,9 +14,6 @@ import javafx.stage.Stage;
 import models.Disaster;
 import models.DisasterType;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-
 public class MainController {
 
     @FXML

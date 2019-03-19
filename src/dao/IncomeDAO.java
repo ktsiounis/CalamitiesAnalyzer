@@ -16,9 +16,6 @@ public class IncomeDAO {
     private static ObservableList<Income> incomeList = FXCollections.observableArrayList();
 
     public static ObservableList<Income> getIncomeForYear(int incomeYear) {
-
-//        ObservableList<Income> incomeList = FXCollections.observableArrayList();
-
         try {
             StringBuilder stringBuilder = buildQuery();
             stringBuilder.append("AND y.year = ?;");
@@ -27,11 +24,9 @@ public class IncomeDAO {
             DBService.dbConnect();
             PreparedStatement pstm = DBService.getConnection().prepareStatement(sql);
             pstm.setInt(1, incomeYear);
-            ResultSet rs = pstm.executeQuery();
 
-            iterateResultSet(rs);
+            iterateResultSet(pstm.executeQuery());
             DBService.dbDisconnect();
-            rs.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -40,9 +35,6 @@ public class IncomeDAO {
     }
 
     public static ObservableList<Income> getIncomeForYearRange(int from, int to) {
-
-//        ObservableList<Income> incomeList = FXCollections.observableArrayList();
-
         try {
             StringBuilder stringBuilder = buildQuery();
             stringBuilder.append("AND y.year BETWEEN ? AND ?;");
@@ -52,12 +44,9 @@ public class IncomeDAO {
             PreparedStatement pstm = DBService.getConnection().prepareStatement(sql);
             pstm.setInt(1, from);
             pstm.setInt(2, to);
-            ResultSet rs = pstm.executeQuery();
 
-            iterateResultSet(rs);
-
+            iterateResultSet(pstm.executeQuery());
             DBService.dbDisconnect();
-            rs.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -66,9 +55,6 @@ public class IncomeDAO {
     }
 
     public static ObservableList<Income> getIncomeForCountries(String name) {
-
-//        ObservableList<Income> incomeList = FXCollections.observableArrayList();
-
         try {
             StringBuilder stringBuilder = buildQuery();
             stringBuilder.append("AND c.name LIKE ?;");
@@ -77,11 +63,9 @@ public class IncomeDAO {
             DBService.dbConnect();
             PreparedStatement pstm = DBService.getConnection().prepareStatement(sql);
             pstm.setString(1, "%" + name + "%");
-            ResultSet rs = pstm.executeQuery();
 
-            iterateResultSet(rs);
+            iterateResultSet(pstm.executeQuery());
             DBService.dbDisconnect();
-            rs.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -107,6 +91,8 @@ public class IncomeDAO {
             }
         } catch (SQLException se) {
             se.printStackTrace();
+        } finally {
+            rs.close();
         }
     }
 

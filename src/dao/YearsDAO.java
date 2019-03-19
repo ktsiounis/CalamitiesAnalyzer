@@ -14,20 +14,12 @@ public class YearsDAO {
     private static ObservableList<Year> years = FXCollections.observableArrayList();
 
     public static ObservableList<Year> getAllYears(boolean orderDesc) {
-
-//        ObservableList<Year> years = FXCollections.observableArrayList();
-
         try {
             StringBuilder stringBuilder = buildQuery();
             String sql = stringBuilder.toString();
             sql += orderDesc ? "ORDER BY year DESC;" : ";";
 
-            ResultSet rs = DBService.dbExecuteQuery(sql);
-
-            iterateResultSet(rs);
-
-            rs.close();
-
+            iterateResultSet(DBService.dbExecuteQuery(sql));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -38,9 +30,6 @@ public class YearsDAO {
     }
 
     public static ObservableList<Year> getYearsRange(int from, int to) {
-
-//        ObservableList<Year> years = FXCollections.observableArrayList();
-
         try {
             StringBuilder stringBuilder = buildQuery();
             stringBuilder.append("WHERE year BETWEEN ? AND ?;");
@@ -50,11 +39,9 @@ public class YearsDAO {
             PreparedStatement pstm = DBService.getConnection().prepareStatement(sql);
             pstm.setInt(1, from);
             pstm.setInt(2, to);
-            ResultSet rs = pstm.executeQuery();
 
-            iterateResultSet(rs);
+            iterateResultSet(pstm.executeQuery());
             DBService.dbDisconnect();
-            rs.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -82,6 +69,8 @@ public class YearsDAO {
             }
         } catch (SQLException se) {
             se.printStackTrace();
+        } finally {
+            rs.close();
         }
     }
 

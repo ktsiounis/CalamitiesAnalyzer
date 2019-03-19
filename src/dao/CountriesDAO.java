@@ -14,20 +14,12 @@ public class CountriesDAO {
     private static ObservableList<Country> countries = FXCollections.observableArrayList();
 
     public static ObservableList<Country> getAllCountries(boolean orderDesc) {
-
-//        ObservableList<Country> countries = FXCollections.observableArrayList();
-
         try {
             StringBuilder stringBuilder = buildQuery();
             String sql = stringBuilder.toString();
             sql += orderDesc ? "ORDER BY name DESC;" : ";";
 
-            ResultSet rs = DBService.dbExecuteQuery(sql);
-
-            iterateResultSet(rs);
-
-            rs.close();
-
+            iterateResultSet(DBService.dbExecuteQuery(sql));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -37,8 +29,6 @@ public class CountriesDAO {
     }
 
     public static ObservableList<Country> getCountries(String country) {
-//        ObservableList<Country> countries = FXCollections.observableArrayList();
-
         try {
             StringBuilder stringBuilder = buildQuery();
             stringBuilder.append("WHERE name LIKE ?;");
@@ -47,11 +37,9 @@ public class CountriesDAO {
             DBService.dbConnect();
             PreparedStatement pstm = DBService.getConnection().prepareStatement(sql);
             pstm.setString(1, "%" + country + "%");
-            ResultSet rs = pstm.executeQuery();
 
-            iterateResultSet(rs);
+            iterateResultSet(pstm.executeQuery());
             DBService.dbDisconnect();
-            rs.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -70,6 +58,8 @@ public class CountriesDAO {
             }
         } catch (SQLException se) {
             se.printStackTrace();
+        } finally {
+            rs.close();
         }
     }
 

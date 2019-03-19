@@ -7,8 +7,6 @@ import models.Disaster;
 import models.DisasterType;
 import models.Year;
 import utils.DBService;
-import utils.Misc;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,19 +16,12 @@ public class DisasterDAO {
     private static ObservableList<Disaster> disasters = FXCollections.observableArrayList();
 
     public static ObservableList<Disaster> getAllForDisaster(DisasterType type) {
-
-//        ObservableList<Disaster> disasters = FXCollections.observableArrayList();
-
         try {
             StringBuilder stringBuilder = buildQuery(type);
             stringBuilder.append(";");
             String sql = stringBuilder.toString();
 
-            ResultSet rs = DBService.dbExecuteQuery(sql);
-
-            iterateResultSet(rs, type);
-            rs.close();
-
+            iterateResultSet(DBService.dbExecuteQuery(sql), type);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -39,9 +30,6 @@ public class DisasterDAO {
     }
 
     public static ObservableList<Disaster> getDisasterForCountry(DisasterType type, String countryName) {
-
-//        ObservableList<Disaster> disasters = FXCollections.observableArrayList();
-
         try {
             StringBuilder stringBuilder = buildQuery(type);
             stringBuilder.append("\n");
@@ -51,13 +39,10 @@ public class DisasterDAO {
             DBService.dbConnect();
             PreparedStatement pstm = DBService.getConnection().prepareStatement(sql);
             pstm.setString(1, "%" + countryName + "%");
-            ResultSet rs = pstm.executeQuery();
 
-            iterateResultSet(rs, type);
+            iterateResultSet(pstm.executeQuery(), type);
 
             DBService.dbDisconnect();
-            rs.close();
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -86,6 +71,8 @@ public class DisasterDAO {
             }
         } catch (SQLException se) {
             se.printStackTrace();
+        } finally {
+            rs.close();
         }
     }
 
