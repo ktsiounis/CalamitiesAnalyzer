@@ -93,6 +93,7 @@ public class DBService {
     }
 
     public static Connection getConnection() {
+        dbConnect();
         return connection;
     }
 

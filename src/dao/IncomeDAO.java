@@ -15,17 +15,18 @@ public class IncomeDAO {
 
     private static ObservableList<Income> incomeList = FXCollections.observableArrayList();
 
-    public static ObservableList<Income> getIncomeForYear(int incomeYear) {
+    public static ObservableList<Income> getIncomeForYear(final int incomeYear) {
         try {
-            StringBuilder stringBuilder = buildQuery();
-            stringBuilder.append("AND y.year = ?;");
-            String sql = stringBuilder.toString();
+            String sql = buildQuery().append("AND y.year = ?;")
+                                     .toString();
 
-            DBService.dbConnect();
-            PreparedStatement pstm = DBService.getConnection().prepareStatement(sql);
+            PreparedStatement pstm = DBService.getConnection()
+                                              .prepareStatement(sql);
+
             pstm.setInt(1, incomeYear);
 
             iterateResultSet(pstm.executeQuery());
+
             DBService.dbDisconnect();
         } catch (Exception e) {
             e.printStackTrace();
@@ -34,18 +35,19 @@ public class IncomeDAO {
         return incomeList;
     }
 
-    public static ObservableList<Income> getIncomeForYearRange(int from, int to) {
+    public static ObservableList<Income> getIncomeForYearRange(final int from, final int to) {
         try {
-            StringBuilder stringBuilder = buildQuery();
-            stringBuilder.append("AND y.year BETWEEN ? AND ?;");
-            String sql = stringBuilder.toString();
+            String sql = buildQuery().append("AND y.year BETWEEN ? AND ?;")
+                                     .toString();
 
-            DBService.dbConnect();
-            PreparedStatement pstm = DBService.getConnection().prepareStatement(sql);
+            PreparedStatement pstm = DBService.getConnection()
+                                              .prepareStatement(sql);
+
             pstm.setInt(1, from);
             pstm.setInt(2, to);
 
             iterateResultSet(pstm.executeQuery());
+
             DBService.dbDisconnect();
         } catch (Exception e) {
             e.printStackTrace();
@@ -54,17 +56,18 @@ public class IncomeDAO {
         return incomeList;
     }
 
-    public static ObservableList<Income> getIncomeForCountries(String name) {
+    public static ObservableList<Income> getIncomeForCountries(final String name) {
         try {
-            StringBuilder stringBuilder = buildQuery();
-            stringBuilder.append("AND c.name LIKE ?;");
-            String sql = stringBuilder.toString();
+            String sql = buildQuery().append("AND c.name LIKE ?;")
+                                     .toString();
 
-            DBService.dbConnect();
-            PreparedStatement pstm = DBService.getConnection().prepareStatement(sql);
+            PreparedStatement pstm = DBService.getConnection()
+                                              .prepareStatement(sql);
+
             pstm.setString(1, "%" + name + "%");
 
             iterateResultSet(pstm.executeQuery());
+
             DBService.dbDisconnect();
         } catch (Exception e) {
             e.printStackTrace();
@@ -73,21 +76,14 @@ public class IncomeDAO {
         return incomeList;
     }
 
-    private static void iterateResultSet(ResultSet rs) throws SQLException {
+    private static void iterateResultSet(final ResultSet rs) throws SQLException {
         incomeList.clear();
         try {
             while (rs.next()) {
-                int id = rs.getInt("id");
-                int countryID = rs.getInt("country_id");
-                int yearID = rs.getInt("year_id");
-                int income = rs.getInt("income");
-                int year = rs.getInt("year");
-                String country = rs.getString("name");
-
-                incomeList.add(new Income(id,
-                        new Country(countryID, country),
-                        new Year(yearID, year),
-                        income));
+                incomeList.add(new Income(rs.getInt("id"),
+                               new Country(rs.getInt("country_id"), rs.getString("name")),
+                               new Year(rs.getInt("year_id"), rs.getInt("year")),
+                               rs.getInt("income")));
             }
         } catch (SQLException se) {
             se.printStackTrace();
@@ -97,13 +93,11 @@ public class IncomeDAO {
     }
 
     private static StringBuilder buildQuery() {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("SELECT i.id, i.country_id, i.year_id, i.income, y.year, c.name\n");
-        stringBuilder.append("FROM incomes as i, years as y, countries as c\n");
-        stringBuilder.append("WHERE y.id = i.year_id\n");
-        stringBuilder.append("AND i.country_id = c.id\n");
-
-        return stringBuilder;
+        return new StringBuilder()
+                .append("SELECT i.id, i.country_id, i.year_id, i.income, y.year, c.name\n")
+                .append("FROM incomes as i, years as y, countries as c\n")
+                .append("WHERE y.id = i.year_id\n")
+                .append("AND i.country_id = c.id\n");
     }
 
     public static void main(String[] args) {

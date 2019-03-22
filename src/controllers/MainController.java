@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.chart.*;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import models.Disaster;
@@ -22,6 +23,8 @@ public class MainController {
     private ChoiceBox countriesChoiceBox;
     @FXML
     private ChoiceBox eventsChoiceBox;
+    @FXML
+    private ComboBox countriesComboBox;
 
     @FXML
     void initialize() {
@@ -30,6 +33,8 @@ public class MainController {
 
         countriesChoiceBox.setItems(CountriesDAO.getAllCountries(false));
         countriesChoiceBox.getSelectionModel().select(0);
+
+        countriesComboBox.setItems(CountriesDAO.getAllCountries(false));
 
         ObservableList<DisasterType> events = FXCollections.observableArrayList();
         events.add(DisasterType.EARTHQUAKE);
@@ -53,10 +58,8 @@ public class MainController {
 
         String countrySelected = countriesChoiceBox.getSelectionModel().getSelectedItem().toString();
 
-        ObservableList<Disaster> disasters = FXCollections.observableArrayList();
-
         DisasterType type = (DisasterType) eventsChoiceBox.getSelectionModel().getSelectedItem();
-        disasters = DisasterDAO.getDisasterForCountry(type, countrySelected);
+        ObservableList<Disaster> disasters = DisasterDAO.getDisasterForCountry(type, countrySelected);
 
         NumberAxis xAxis = new NumberAxis(1970, 2020, 10);
         xAxis.setLabel("Years");

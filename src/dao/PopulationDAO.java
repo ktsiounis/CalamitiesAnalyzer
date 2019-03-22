@@ -15,18 +15,17 @@ public class PopulationDAO {
 
     private static ObservableList<Population> populationList = FXCollections.observableArrayList();;
 
-    public static ObservableList<Population> getPopulationForYear(int populationYear) {
+    public static ObservableList<Population> getPopulationForYear(final int populationYear) {
 
         try {
-            StringBuilder stringBuilder = buildQuery();
-            stringBuilder.append("AND y.year = ?;");
-            String sql = stringBuilder.toString();
+            String sql = buildQuery().append("AND y.year = ?;")
+                                     .toString();
 
-            DBService.dbConnect();
             PreparedStatement pstm = DBService.getConnection().prepareStatement(sql);
             pstm.setInt(1, populationYear);
 
             iterateResultSet(pstm.executeQuery());
+
             DBService.dbDisconnect();
         } catch (Exception e) {
             e.printStackTrace();
@@ -35,19 +34,20 @@ public class PopulationDAO {
         return populationList;
     }
 
-    public static ObservableList<Population> getPopulationForYearRange(int from, int to) {
+    public static ObservableList<Population> getPopulationForYearRange(final int from, final int to) {
 
         try {
-            StringBuilder stringBuilder = buildQuery();
-            stringBuilder.append("AND y.year BETWEEN ? AND ?;");
-            String sql = stringBuilder.toString();
+            String sql = buildQuery().append("AND y.year BETWEEN ? AND ?;")
+                                     .toString();
 
-            DBService.dbConnect();
-            PreparedStatement pstm = DBService.getConnection().prepareStatement(sql);
+            PreparedStatement pstm = DBService.getConnection()
+                                              .prepareStatement(sql);
+
             pstm.setInt(1, from);
             pstm.setInt(2, to);
 
             iterateResultSet(pstm.executeQuery());
+
             DBService.dbDisconnect();
         } catch (Exception e) {
             e.printStackTrace();
@@ -56,18 +56,19 @@ public class PopulationDAO {
         return populationList;
     }
 
-    public static ObservableList<Population> getPopulationForCountry(String name) {
+    public static ObservableList<Population> getPopulationForCountry(final String name) {
 
         try {
-            StringBuilder stringBuilder = buildQuery();
-            stringBuilder.append("AND c.name LIKE ?;");
-            String sql = stringBuilder.toString();
+            String sql = buildQuery().append("AND c.name LIKE ?;")
+                                     .toString();
 
-            DBService.dbConnect();
-            PreparedStatement pstm = DBService.getConnection().prepareStatement(sql);
+            PreparedStatement pstm = DBService.getConnection()
+                                              .prepareStatement(sql);
+
             pstm.setString(1, "%" + name + "%");
 
             iterateResultSet(pstm.executeQuery());
+
             DBService.dbDisconnect();
         } catch (Exception e) {
             e.printStackTrace();
@@ -76,21 +77,14 @@ public class PopulationDAO {
         return populationList;
     }
 
-    private static void iterateResultSet(ResultSet rs) throws SQLException {
+    private static void iterateResultSet(final ResultSet rs) throws SQLException {
         populationList.clear();
         try {
             while (rs.next()) {
-                int id = rs.getInt("id");
-                int countryID = rs.getInt("country_id");
-                int yearID = rs.getInt("year_id");
-                int population = rs.getInt("population");
-                int year = rs.getInt("year");
-                String country = rs.getString("name");
-
-                populationList.add(new Population(id,
-                        new Country(countryID, country),
-                        new Year(yearID, year),
-                        population));
+                populationList.add(new Population(rs.getInt("id"),
+                                   new Country(rs.getInt("country_id"), rs.getString("name")),
+                                   new Year(rs.getInt("year_id"), rs.getInt("year")),
+                                   rs.getInt("population")));
             }
         } catch (SQLException se) {
             se.printStackTrace();
@@ -100,13 +94,11 @@ public class PopulationDAO {
     }
 
     private static StringBuilder buildQuery() {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("SELECT p.id, p.country_id, p.year_id, p.population, y.year, c.name\n");
-        stringBuilder.append("FROM population as p, years as y, countries as c\n");
-        stringBuilder.append("WHERE y.id = p.year_id\n");
-        stringBuilder.append("AND p.country_id = c.id\n");
-
-        return stringBuilder;
+        return new StringBuilder()
+                .append("SELECT p.id, p.country_id, p.year_id, p.population, y.year, c.name\n")
+                .append("FROM population as p, years as y, countries as c\n")
+                .append("WHERE y.id = p.year_id\n")
+                .append("AND p.country_id = c.id\n");
     }
 
     public static void main(String[] args) {

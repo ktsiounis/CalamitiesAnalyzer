@@ -13,10 +13,9 @@ public class YearsDAO {
 
     private static ObservableList<Year> years = FXCollections.observableArrayList();
 
-    public static ObservableList<Year> getAllYears(boolean orderDesc) {
+    public static ObservableList<Year> getAllYears(final boolean orderDesc) {
         try {
-            StringBuilder stringBuilder = buildQuery();
-            String sql = stringBuilder.toString();
+            String sql = buildQuery().toString();
             sql += orderDesc ? "ORDER BY year DESC;" : ";";
 
             iterateResultSet(DBService.dbExecuteQuery(sql));
@@ -29,18 +28,19 @@ public class YearsDAO {
 
     }
 
-    public static ObservableList<Year> getYearsRange(int from, int to) {
+    public static ObservableList<Year> getYearsRange(final int from, final int to) {
         try {
-            StringBuilder stringBuilder = buildQuery();
-            stringBuilder.append("WHERE year BETWEEN ? AND ?;");
-            String sql = stringBuilder.toString();
+            String sql = buildQuery().append("WHERE year BETWEEN ? AND ?;")
+                                     .toString();
 
-            DBService.dbConnect();
-            PreparedStatement pstm = DBService.getConnection().prepareStatement(sql);
+            PreparedStatement pstm = DBService.getConnection()
+                                              .prepareStatement(sql);
+
             pstm.setInt(1, from);
             pstm.setInt(2, to);
 
             iterateResultSet(pstm.executeQuery());
+
             DBService.dbDisconnect();
         } catch (Exception e) {
             e.printStackTrace();
@@ -50,22 +50,16 @@ public class YearsDAO {
     }
 
     private static StringBuilder buildQuery() {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("SELECT *\n");
-        stringBuilder.append("FROM years\n");
-
-        return stringBuilder;
+        return new StringBuilder()
+                .append("SELECT *\n")
+                .append("FROM years\n");
     }
 
-    private static void iterateResultSet(ResultSet rs) throws SQLException {
+    private static void iterateResultSet(final ResultSet rs) throws SQLException {
         years.clear();
         try {
             while (rs.next()) {
-                int id = rs.getInt("id");
-                int year = rs.getInt("year");
-                years.add(new Year(id, year));
-                System.out.println("Year: " + year);
-
+                years.add(new Year(rs.getInt("id"), rs.getInt("year")));
             }
         } catch (SQLException se) {
             se.printStackTrace();
