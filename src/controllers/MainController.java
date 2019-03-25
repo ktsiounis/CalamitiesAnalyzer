@@ -2,18 +2,13 @@ package controllers;
 
 import dao.*;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.Scene;
 import javafx.scene.chart.*;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import models.*;
-
-import java.util.ArrayList;
 
 public class MainController {
 
@@ -27,6 +22,8 @@ public class MainController {
     private AnchorPane chartAnchorPane;
     @FXML
     private ListView countriesListView;
+    @FXML
+    private Label noGraphLabel;
 
     @FXML
     void initialize() {
@@ -77,6 +74,8 @@ public class MainController {
             alert.showAndWait();
             return;
         }
+
+        noGraphLabel.setVisible(false);
 
         NumberAxis xAxis = new NumberAxis(1970, 2020, 10);
         xAxis.setLabel("Years");
