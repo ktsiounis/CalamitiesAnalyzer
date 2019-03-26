@@ -1,6 +1,7 @@
 package controllers;
 
 import dao.*;
+import javafx.beans.value.ObservableIntegerValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -76,8 +77,11 @@ public class MainController {
         }
 
         noGraphLabel.setVisible(false);
+        int lowerBound = Integer.parseInt(periodFromChoiceBox.getSelectionModel().getSelectedItem().toString());
+        int upperBound = Integer.parseInt(periodToChoiceBox.getSelectionModel().getSelectedItem().toString());
+        int tickUnit = Math.floorDiv((upperBound - lowerBound), 20);
 
-        NumberAxis xAxis = new NumberAxis(1970, 2020, 10);
+        NumberAxis xAxis = new NumberAxis(lowerBound, upperBound, tickUnit);
         xAxis.setLabel("Years");
 
         NumberAxis yAxis = new NumberAxis();
@@ -100,30 +104,8 @@ public class MainController {
                     case "population":
                         populations = PopulationDAO.getPopulationForCountry(countrySelected.getName());
                         break;
-                    case "epidemics":
-                        disasters = DisasterDAO.getDisasterForCountry(DisasterType.EPIDEMIC, countrySelected.getName());
-                        break;
-                    case "droughts":
-                        disasters = DisasterDAO.getDisasterForCountry(DisasterType.DROUGHT, countrySelected.getName());
-                        break;
-                    case "earthquakes":
-                        disasters = DisasterDAO.getDisasterForCountry(DisasterType.EARTHQUAKE, countrySelected.getName());
-                        break;
-                    case "extreme temperatures":
-                        disasters = DisasterDAO.getDisasterForCountry(DisasterType.EXTREME_TEMPERATURE, countrySelected.getName());
-                        break;
-                    case "floods":
-                        disasters = DisasterDAO.getDisasterForCountry(DisasterType.FLOOD, countrySelected.getName());
-                        break;
-                    case "plane crashes":
-                        disasters = DisasterDAO.getDisasterForCountry(DisasterType.PLANE_CRASH, countrySelected.getName());
-                        break;
-                    case "storms":
-                        disasters = DisasterDAO.getDisasterForCountry(DisasterType.STORM, countrySelected.getName());
-                        break;
-                    case "tsunamis":
-                        disasters = DisasterDAO.getDisasterForCountry(DisasterType.TSUNAMI, countrySelected.getName());
-                        break;
+                    default:
+                        disasters = DisasterDAO.getDisasterForCountry(DisasterType.fromString(type), countrySelected.getName());
                 }
 
                 if (incomes.size()>0) {
@@ -165,7 +147,8 @@ public class MainController {
         }
 
         VBox vbox = new VBox(barChart);
-
+        vbox.setMinSize(810, 400);
+        vbox.setMaxSize(1920, 1080);
         chartAnchorPane.getChildren().clear();
         chartAnchorPane.getChildren().add(vbox);
 
