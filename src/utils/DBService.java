@@ -44,6 +44,7 @@ public class DBService {
     public static void dbDisconnect() throws Exception {
         try {
             if (connection != null && !connection.isClosed()) {
+                connection.setAutoCommit(true);
                 connection.close();
             }
         } catch (Exception e) {

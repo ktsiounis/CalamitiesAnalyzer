@@ -66,8 +66,9 @@ public class DisasterDAO {
     private static StringBuilder buildQuery(final DisasterType type) {
         return new StringBuilder()
                 .append("SELECT d.id, d.country_id, d.year_id, d.affected, d.deaths, y.year, c.name\n")
-                .append("FROM " + type.getTableName() + " ")
-                .append("as d, countries as c, years as y\n")
+                .append("FROM ")
+                .append(type.getTableName())
+                .append(" as d, countries as c, years as y\n")
                 .append("WHERE d.country_id = c.id AND d.year_id = y.id");
     }
 
