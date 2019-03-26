@@ -56,6 +56,31 @@ public class IncomeDAO {
         return incomeList;
     }
 
+    public static ObservableList<Income> getIncomeForCountryInAPeriod(final int from,
+                                                                      final int to,
+                                                                      final String name) {
+        try {
+            String sql = buildQuery().append("AND c.name LIKE ?\n")
+                                     .append("AND y.year BETWEEN ? AND ?;")
+                                     .toString();
+
+            PreparedStatement pstm = DBService.getConnection()
+                    .prepareStatement(sql);
+
+            pstm.setString(1, name);
+            pstm.setInt(2, from);
+            pstm.setInt(3, to);
+
+            iterateResultSet(pstm.executeQuery());
+
+            DBService.dbDisconnect();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return incomeList;
+    }
+
     public static ObservableList<Income> getIncomeForCountries(final String name) {
         try {
             String sql = buildQuery().append("AND c.name LIKE ?;")

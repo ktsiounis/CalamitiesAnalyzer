@@ -99,13 +99,13 @@ public class MainController {
 
                 switch (type.toLowerCase()) {
                     case "income":
-                        incomes = IncomeDAO.getIncomeForCountries(countrySelected.getName());
+                        incomes = IncomeDAO.getIncomeForCountryInAPeriod(lowerBound, upperBound, countrySelected.getName());
                         break;
                     case "population":
-                        populations = PopulationDAO.getPopulationForCountry(countrySelected.getName());
+                        populations = PopulationDAO.getPopulationForCountryInAPeriod(lowerBound, upperBound, countrySelected.getName());
                         break;
                     default:
-                        disasters = DisasterDAO.getDisasterForCountry(DisasterType.fromString(type), countrySelected.getName());
+                        disasters = DisasterDAO.getDisasterForCountryInAPeriod(DisasterType.fromString(type), countrySelected.getName(), lowerBound, upperBound);
                 }
 
                 if (incomes.size()>0) {

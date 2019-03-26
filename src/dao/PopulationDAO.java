@@ -77,6 +77,30 @@ public class PopulationDAO {
         return populationList;
     }
 
+    public static ObservableList<Population> getPopulationForCountryInAPeriod(final int from,
+                                                                              final int to,
+                                                                              final String name) {
+        try {
+            String sql = buildQuery().append("AND c.name LIKE ?\n")
+                                     .append("AND y.year BETWEEN ? AND ?;")
+                                     .toString();
+
+            PreparedStatement pstm = DBService.getConnection()
+                                              .prepareStatement(sql);
+
+            pstm.setString(1, name);
+            pstm.setInt(2, from);
+            pstm.setInt(3, to);
+
+            iterateResultSet(pstm.executeQuery());
+
+            DBService.dbDisconnect();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return populationList;
+    }
+
     private static void iterateResultSet(final ResultSet rs) throws SQLException {
         populationList.clear();
         try {
