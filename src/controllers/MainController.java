@@ -3,6 +3,7 @@ package controllers;
 import dao.*;
 import javafx.beans.value.ObservableIntegerValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.chart.*;
@@ -25,6 +26,8 @@ public class MainController {
     private ListView countriesListView;
     @FXML
     private Label noGraphLabel;
+    @FXML
+    private ChoiceBox questionChoiceBox;
 
     @FXML
     void initialize() {
@@ -53,6 +56,35 @@ public class MainController {
 
         eventsListView.setItems(events);
         eventsListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+
+        ObservableList<String> questions = FXCollections.observableArrayList();
+        questionChoiceBox.setItems(questions);
+
+        eventsListView.getSelectionModel().getSelectedItems().addListener((ListChangeListener) c -> {
+            if (!countriesListView.getSelectionModel().getSelectedItems().isEmpty()) {
+                if (Integer.parseInt(periodToChoiceBox.getSelectionModel().getSelectedItem().toString()) - Integer.parseInt(periodFromChoiceBox.getSelectionModel().getSelectedItem().toString()) == 1
+                        && !eventsListView.getSelectionModel().getSelectedItems().isEmpty()
+                        && countriesListView.getSelectionModel().getSelectedItems().size()==1) {
+                    questions.clear();
+                    questions.add(QuestionAboutData.COMPOSITION.toString());
+                    questions.add(QuestionAboutData.COMPARE_WITH_BAR.toString());
+                    questions.add(QuestionAboutData.COMPARE_WITH_LINE.toString());
+                }
+            }
+        });
+
+        countriesListView.getSelectionModel().getSelectedItems().addListener((ListChangeListener) c -> {
+            if (!eventsListView.getSelectionModel().getSelectedItems().isEmpty()) {
+                if (Integer.parseInt(periodToChoiceBox.getSelectionModel().getSelectedItem().toString()) - Integer.parseInt(periodFromChoiceBox.getSelectionModel().getSelectedItem().toString()) == 1
+                        && !countriesListView.getSelectionModel().getSelectedItems().isEmpty()
+                        && countriesListView.getSelectionModel().getSelectedItems().size()==1) {
+                    questions.clear();
+                    questions.add(QuestionAboutData.COMPOSITION.toString());
+                    questions.add(QuestionAboutData.COMPARE_WITH_BAR.toString());
+                    questions.add(QuestionAboutData.COMPARE_WITH_LINE.toString());
+                }
+            }
+        });
 
     }
 
