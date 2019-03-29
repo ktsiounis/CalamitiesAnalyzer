@@ -69,6 +69,21 @@ public class MainController {
                     questions.add(QuestionAboutData.COMPOSITION.toString());
                     questions.add(QuestionAboutData.COMPARE_WITH_BAR.toString());
                     questions.add(QuestionAboutData.COMPARE_WITH_LINE.toString());
+                } else if (Integer.parseInt(periodToChoiceBox.getSelectionModel().getSelectedItem().toString()) - Integer.parseInt(periodFromChoiceBox.getSelectionModel().getSelectedItem().toString()) == 1
+                        && eventsListView.getSelectionModel().getSelectedItems().size() == 1
+                        && !countriesListView.getSelectionModel().getSelectedItems().isEmpty()) {
+                    questions.clear();
+                    questions.add(QuestionAboutData.COMPOSITION.toString());
+                    questions.add(QuestionAboutData.COMPARE_WITH_BAR.toString());
+                    questions.add(QuestionAboutData.COMPARE_WITH_LINE.toString());
+                } else {
+                    questions.clear();
+                    questions.add(QuestionAboutData.ANALYZE_TREND_LINE.toString());
+                    questions.add(QuestionAboutData.COMPARE_WITH_BAR.toString());
+                    questions.add(QuestionAboutData.COMPARE_WITH_LINE.toString());
+                    questions.add(QuestionAboutData.UNDERSTAND_WITH_BAR.toString());
+                    questions.add(QuestionAboutData.UNDERSTAND_WITH_LINE.toString());
+                    questions.add(QuestionAboutData.UNDERSTAND_WITH_SCATTER.toString());
                 }
             }
         });
@@ -82,6 +97,21 @@ public class MainController {
                     questions.add(QuestionAboutData.COMPOSITION.toString());
                     questions.add(QuestionAboutData.COMPARE_WITH_BAR.toString());
                     questions.add(QuestionAboutData.COMPARE_WITH_LINE.toString());
+                } else if (Integer.parseInt(periodToChoiceBox.getSelectionModel().getSelectedItem().toString()) - Integer.parseInt(periodFromChoiceBox.getSelectionModel().getSelectedItem().toString()) == 1
+                        && countriesListView.getSelectionModel().getSelectedItems().size() == 1
+                        && !countriesListView.getSelectionModel().getSelectedItems().isEmpty()) {
+                    questions.clear();
+                    questions.add(QuestionAboutData.COMPOSITION.toString());
+                    questions.add(QuestionAboutData.COMPARE_WITH_BAR.toString());
+                    questions.add(QuestionAboutData.COMPARE_WITH_LINE.toString());
+                } else {
+                    questions.clear();
+                    questions.add(QuestionAboutData.ANALYZE_TREND_LINE.toString());
+                    questions.add(QuestionAboutData.COMPARE_WITH_BAR.toString());
+                    questions.add(QuestionAboutData.COMPARE_WITH_LINE.toString());
+                    questions.add(QuestionAboutData.UNDERSTAND_WITH_BAR.toString());
+                    questions.add(QuestionAboutData.UNDERSTAND_WITH_LINE.toString());
+                    questions.add(QuestionAboutData.UNDERSTAND_WITH_SCATTER.toString());
                 }
             }
         });
