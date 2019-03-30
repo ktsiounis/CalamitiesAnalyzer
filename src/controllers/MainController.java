@@ -43,14 +43,11 @@ public class MainController {
         countriesListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
         ObservableList<String> events = FXCollections.observableArrayList();
-        events.add(DisasterType.EARTHQUAKE.toString());
-        events.add(DisasterType.DROUGHT.toString());
-        events.add(DisasterType.EPIDEMIC.toString());
-        events.add(DisasterType.EXTREME_TEMPERATURE.toString());
-        events.add(DisasterType.FLOOD.toString());
-        events.add(DisasterType.PLANE_CRASH.toString());
-        events.add(DisasterType.STORM.toString());
-        events.add(DisasterType.TSUNAMI.toString());
+
+        for (DisasterType type: DisasterType.values()) {
+            events.add(type.toString());
+        }
+
         events.add("Income");
         events.add("Population");
 
@@ -60,22 +57,22 @@ public class MainController {
         ObservableList<String> questions = FXCollections.observableArrayList();
         questionChoiceBox.setItems(questions);
 
-        eventsListView.getSelectionModel().getSelectedItems().addListener((ListChangeListener) c -> {
-            if (!countriesListView.getSelectionModel().getSelectedItems().isEmpty()) {
-                if (Integer.parseInt(periodToChoiceBox.getSelectionModel().getSelectedItem().toString()) - Integer.parseInt(periodFromChoiceBox.getSelectionModel().getSelectedItem().toString()) == 1
-                        && !eventsListView.getSelectionModel().getSelectedItems().isEmpty()
-                        && countriesListView.getSelectionModel().getSelectedItems().size()==1) {
-                    questions.clear();
-                    questions.add(QuestionAboutData.COMPOSITION.toString());
-                    questions.add(QuestionAboutData.COMPARE_WITH_BAR.toString());
-                    questions.add(QuestionAboutData.COMPARE_WITH_LINE.toString());
-                } else if (Integer.parseInt(periodToChoiceBox.getSelectionModel().getSelectedItem().toString()) - Integer.parseInt(periodFromChoiceBox.getSelectionModel().getSelectedItem().toString()) == 1
-                        && eventsListView.getSelectionModel().getSelectedItems().size() == 1
-                        && !countriesListView.getSelectionModel().getSelectedItems().isEmpty()) {
-                    questions.clear();
-                    questions.add(QuestionAboutData.COMPOSITION.toString());
-                    questions.add(QuestionAboutData.COMPARE_WITH_BAR.toString());
-                    questions.add(QuestionAboutData.COMPARE_WITH_LINE.toString());
+        getSelectedList(eventsListView).addListener((ListChangeListener) c -> {
+            if (!getSelectedList(countriesListView).isEmpty()) {
+                if (getIntValueFromBox(periodToChoiceBox) - getIntValueFromBox(periodFromChoiceBox) == 1) {
+                    if (!getSelectedList(eventsListView).isEmpty()
+                            && getSelectedList(countriesListView).size() == 1) {
+                        questions.clear();
+                        questions.add(QuestionAboutData.COMPOSITION.toString());
+                        questions.add(QuestionAboutData.COMPARE_WITH_BAR.toString());
+                        questions.add(QuestionAboutData.COMPARE_WITH_LINE.toString());
+                    } else if (getSelectedList(eventsListView).size() == 1
+                            && !getSelectedList(countriesListView).isEmpty()) {
+                        questions.clear();
+                        questions.add(QuestionAboutData.COMPOSITION.toString());
+                        questions.add(QuestionAboutData.COMPARE_WITH_BAR.toString());
+                        questions.add(QuestionAboutData.COMPARE_WITH_LINE.toString());
+                    }
                 } else {
                     questions.clear();
                     questions.add(QuestionAboutData.ANALYZE_TREND_LINE.toString());
@@ -88,22 +85,22 @@ public class MainController {
             }
         });
 
-        countriesListView.getSelectionModel().getSelectedItems().addListener((ListChangeListener) c -> {
-            if (!eventsListView.getSelectionModel().getSelectedItems().isEmpty()) {
-                if (Integer.parseInt(periodToChoiceBox.getSelectionModel().getSelectedItem().toString()) - Integer.parseInt(periodFromChoiceBox.getSelectionModel().getSelectedItem().toString()) == 1
-                        && !countriesListView.getSelectionModel().getSelectedItems().isEmpty()
-                        && countriesListView.getSelectionModel().getSelectedItems().size()==1) {
-                    questions.clear();
-                    questions.add(QuestionAboutData.COMPOSITION.toString());
-                    questions.add(QuestionAboutData.COMPARE_WITH_BAR.toString());
-                    questions.add(QuestionAboutData.COMPARE_WITH_LINE.toString());
-                } else if (Integer.parseInt(periodToChoiceBox.getSelectionModel().getSelectedItem().toString()) - Integer.parseInt(periodFromChoiceBox.getSelectionModel().getSelectedItem().toString()) == 1
-                        && countriesListView.getSelectionModel().getSelectedItems().size() == 1
-                        && !countriesListView.getSelectionModel().getSelectedItems().isEmpty()) {
-                    questions.clear();
-                    questions.add(QuestionAboutData.COMPOSITION.toString());
-                    questions.add(QuestionAboutData.COMPARE_WITH_BAR.toString());
-                    questions.add(QuestionAboutData.COMPARE_WITH_LINE.toString());
+        getSelectedList(countriesListView).addListener((ListChangeListener) c -> {
+            if (!getSelectedList(eventsListView).isEmpty()) {
+                if (getIntValueFromBox(periodToChoiceBox) - getIntValueFromBox(periodFromChoiceBox) == 1) {
+                    if (!getSelectedList(countriesListView).isEmpty()
+                            && getSelectedList(countriesListView).size() == 1) {
+                        questions.clear();
+                        questions.add(QuestionAboutData.COMPOSITION.toString());
+                        questions.add(QuestionAboutData.COMPARE_WITH_BAR.toString());
+                        questions.add(QuestionAboutData.COMPARE_WITH_LINE.toString());
+                    } else if (getSelectedList(countriesListView).size() == 1
+                            && !getSelectedList(countriesListView).isEmpty()) {
+                        questions.clear();
+                        questions.add(QuestionAboutData.COMPOSITION.toString());
+                        questions.add(QuestionAboutData.COMPARE_WITH_BAR.toString());
+                        questions.add(QuestionAboutData.COMPARE_WITH_LINE.toString());
+                    }
                 } else {
                     questions.clear();
                     questions.add(QuestionAboutData.ANALYZE_TREND_LINE.toString());
@@ -139,8 +136,8 @@ public class MainController {
         }
 
         noGraphLabel.setVisible(false);
-        int lowerBound = Integer.parseInt(periodFromChoiceBox.getSelectionModel().getSelectedItem().toString());
-        int upperBound = Integer.parseInt(periodToChoiceBox.getSelectionModel().getSelectedItem().toString());
+        int lowerBound = getIntValueFromBox(periodFromChoiceBox);
+        int upperBound = getIntValueFromBox(periodToChoiceBox);
         int tickUnit = Math.floorDiv((upperBound - lowerBound), 20);
 
         NumberAxis xAxis = new NumberAxis(lowerBound, upperBound, tickUnit);
@@ -191,13 +188,13 @@ public class MainController {
                 } else {
 
                     XYChart.Series dataSeries1 = new XYChart.Series();
-                    dataSeries1.setName("No of deaths in a year");
 
                     XYChart.Series dataSeries2 = new XYChart.Series();
-                    dataSeries2.setName("No of affected in a year");
 
                     for (Disaster disaster : disasters) {
                         System.out.println(disaster.getYear().getYear() + " " + disaster.getDeaths());
+                        dataSeries2.setName("No of affected in a year for " + disaster.getCountry().getName() + " (" + disaster.getDisaster() + ")");
+                        dataSeries1.setName("No of deaths in a year for " + disaster.getCountry().getName() + " ( " + disaster.getDisaster() + ")");
                         dataSeries1.getData().add(new XYChart.Data(disaster.getYear().getYear(), disaster.getDeaths()));
                         dataSeries2.getData().add(new XYChart.Data(disaster.getYear().getYear(), disaster.getAffected()));
                     }
@@ -216,4 +213,45 @@ public class MainController {
 
     }
 
+    private String getStringValueFromBox(ChoiceBox box) {
+        return box.getSelectionModel().getSelectedItem().toString();
+    }
+
+    private int getIntValueFromBox(ChoiceBox box) {
+        return Integer.parseInt(getStringValueFromBox(box));
+    }
+
+    private ObservableList getSelectedList(ListView list) {
+        return list.getSelectionModel().getSelectedItems();
+    }
+
+//    private void addListenerToList(ListView list, ListView checkingList, ObservableList<String> valueList) {
+//        getSelectedList(list).addListener((ListChangeListener) c -> {
+//            if (!getSelectedList(checkingList).isEmpty()) {
+//                if (getIntValueFromBox(periodToChoiceBox) - getIntValueFromBox(periodFromChoiceBox) == 1) {
+//                    if (!getSelectedList(list).isEmpty()
+//                            && getSelectedList(checkingList).size() == 1) {
+//                        valueList.clear();
+//                        valueList.add(QuestionAboutData.COMPOSITION.toString());
+//                        valueList.add(QuestionAboutData.COMPARE_WITH_BAR.toString());
+//                        valueList.add(QuestionAboutData.COMPARE_WITH_LINE.toString());
+//                    } else if (getSelectedList(eventsListView).size() == 1
+//                            && !getSelectedList(countriesListView).isEmpty()) {
+//                        valueList.clear();
+//                        valueList.add(QuestionAboutData.COMPOSITION.toString());
+//                        valueList.add(QuestionAboutData.COMPARE_WITH_BAR.toString());
+//                        valueList.add(QuestionAboutData.COMPARE_WITH_LINE.toString());
+//                    }
+//                } else {
+//                    valueList.clear();
+//                    valueList.add(QuestionAboutData.ANALYZE_TREND_LINE.toString());
+//                    valueList.add(QuestionAboutData.COMPARE_WITH_BAR.toString());
+//                    valueList.add(QuestionAboutData.COMPARE_WITH_LINE.toString());
+//                    valueList.add(QuestionAboutData.UNDERSTAND_WITH_BAR.toString());
+//                    valueList.add(QuestionAboutData.UNDERSTAND_WITH_LINE.toString());
+//                    valueList.add(QuestionAboutData.UNDERSTAND_WITH_SCATTER.toString());
+//                }
+//            }
+//        });
+//    }
 }
