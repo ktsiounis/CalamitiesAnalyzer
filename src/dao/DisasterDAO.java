@@ -37,8 +37,7 @@ public class DisasterDAO {
 
     public static ObservableList<Disaster> getDisasterForCountry(final DisasterType type, final String countryName) {
         try {
-            String sql = buildQuery(type).append("\n")
-                                         .append("AND c.name LIKE ?;")
+            String sql = buildQuery(type).append("\nAND c.name LIKE ?;")
                                          .toString();
 
             PreparedStatement pstm = DBService.getConnection().prepareStatement(sql);
@@ -59,8 +58,7 @@ public class DisasterDAO {
                                                                           final int from,
                                                                           final int to) {
         try {
-            String sql = buildQuery(type).append("\n")
-                                         .append("AND c.name LIKE ?\n")
+            String sql = buildQuery(type).append("\nAND c.name LIKE ?\n")
                                          .append("AND y.year BETWEEN ? AND ?;")
                                          .toString();
 
@@ -106,8 +104,6 @@ public class DisasterDAO {
 
     public static void main(String[] args) {
         ObservableList<Disaster> disasters = getDisasterForCountry(DisasterType.EPIDEMIC, "af");
-        disasters.forEach(dis -> {
-            System.out.println(dis);
-        });
+        disasters.forEach(System.out::println);
     }
 }
