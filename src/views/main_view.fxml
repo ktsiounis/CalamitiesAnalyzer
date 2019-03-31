@@ -138,7 +138,7 @@
         </AnchorPane>
         <AnchorPane fx:id="chartAnchorPane" minHeight="0.0" minWidth="0.0" prefHeight="282.0" prefWidth="846.0">
          <children>
-            <Pane layoutX="14.0" layoutY="14.0" prefHeight="274.0" prefWidth="821.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0">
+            <Pane layoutX="14.0" layoutY="14.0" prefHeight="386.0" prefWidth="818.0" AnchorPane.bottomAnchor="350.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0">
                <children>
                   <Label fx:id="noGraphLabel" text="No graph built yet">
                      <font>
@@ -146,6 +146,7 @@
                      </font>
                   </Label>
                </children></Pane>
+            <Label fx:id="noDataLabel" layoutX="27.0" layoutY="400.0" visible="false" AnchorPane.bottomAnchor="18.0" AnchorPane.leftAnchor="27.0" AnchorPane.topAnchor="400.0" />
          </children></AnchorPane>
     </items>
 </SplitPane>
