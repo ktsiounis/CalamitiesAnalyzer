@@ -12,6 +12,13 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
+<!--
+  ~ ChainProof
+  ~ Tsiounis Konstantinos 2630
+  ~ Polyzos Alexios 2338
+  ~ Copyright (c) 2019.
+  -->
+
 <SplitPane dividerPositions="0.45" orientation="VERTICAL" prefHeight="800.0" prefWidth="848.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MainController">
     <items>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="373.0" prefWidth="846.0">

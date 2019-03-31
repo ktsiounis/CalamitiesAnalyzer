@@ -201,7 +201,7 @@ public class MainController {
                     for (Disaster disaster : disasters) {
                         System.out.println(disaster.getYear().getYear() + " " + disaster.getDeaths());
                         dataSeries2.setName("No of affected in a year for " + disaster.getCountry().getName() + " (" + disaster.getDisaster() + ")");
-                        dataSeries1.setName("No of deaths in a year for " + disaster.getCountry().getName() + " ( " + disaster.getDisaster() + ")");
+                        dataSeries1.setName("No of deaths in a year for " + disaster.getCountry().getName() + " (" + disaster.getDisaster() + ")");
                         dataSeries1.getData().add(new XYChart.Data(disaster.getYear().getYear(), disaster.getDeaths()));
                         dataSeries2.getData().add(new XYChart.Data(disaster.getYear().getYear(), disaster.getAffected()));
                     }
