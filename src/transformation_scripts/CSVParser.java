@@ -216,7 +216,7 @@ public class CSVParser {
             String line;
             ArrayList<String> incomeOrPopulationYears = new ArrayList<>();
             ArrayList<String> countryIncomeOrPopulation = new ArrayList<>();
-            ArrayList<TranformationIncomeAndPopulationFileEntry> fileEntries = new ArrayList<>();
+            ArrayList<TransformationIncomeAndPopulationFileEntry> fileEntries = new ArrayList<>();
 
             int i = 0;
             while (( line = initialFileReader.readLine()) != null) {
@@ -231,7 +231,7 @@ public class CSVParser {
                     countryIncomeOrPopulation.addAll(Arrays.asList(countryLineSplitted).subList(1, countryLineSplitted.length));
                     System.out.println(countryIncomeOrPopulation);
                     for (int j=0; j<countryIncomeOrPopulation.size(); j++) {
-                        TranformationIncomeAndPopulationFileEntry transformationFileEntry = new TranformationIncomeAndPopulationFileEntry();
+                        TransformationIncomeAndPopulationFileEntry transformationFileEntry = new TransformationIncomeAndPopulationFileEntry();
                         transformationFileEntry.setCountryId(String.valueOf(countries.indexOf(countryLineSplitted[0]) + 1));
                         transformationFileEntry.setYearId(String.valueOf(years.indexOf(incomeOrPopulationYears.get(j)) + 1));
                         transformationFileEntry.setValue(countryIncomeOrPopulation.get(j));
@@ -241,7 +241,7 @@ public class CSVParser {
                 i++;
             }
 
-            for (TranformationIncomeAndPopulationFileEntry entry : fileEntries) {
+            for (TransformationIncomeAndPopulationFileEntry entry : fileEntries) {
                 bufferedWriter.write(entry.toString() + "\n");
             }
 

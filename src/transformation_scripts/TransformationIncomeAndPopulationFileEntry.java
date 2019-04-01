@@ -7,19 +7,19 @@
 
 package transformation_scripts;
 
-public class TranformationIncomeAndPopulationFileEntry {
+public class TransformationIncomeAndPopulationFileEntry {
 
     private String countryId;
     private String yearId;
     private String value;
 
-    public TranformationIncomeAndPopulationFileEntry(String countryId, String yearId, String value) {
+    public TransformationIncomeAndPopulationFileEntry(String countryId, String yearId, String value) {
         this.countryId = countryId;
         this.yearId = yearId;
         this.value = value;
     }
 
-    public TranformationIncomeAndPopulationFileEntry() {
+    public TransformationIncomeAndPopulationFileEntry() {
 
     }
 
