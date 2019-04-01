@@ -20,7 +20,7 @@ import java.sql.SQLException;
 
 public class PopulationDAO {
 
-    private static ObservableList<Population> populationList = FXCollections.observableArrayList();;
+    private static ObservableList<Population> populationList = FXCollections.observableArrayList();
 
     public static ObservableList<Population> getPopulationForYear(final int populationYear) {
 
