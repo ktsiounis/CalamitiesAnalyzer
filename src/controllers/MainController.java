@@ -37,9 +37,27 @@ public class MainController {
     private ChoiceBox questionChoiceBox;
     @FXML
     private Label noDataLabel;
+    @FXML
+    private RadioButton oneYearRadioButton;
+    @FXML
+    private RadioButton fiveYearsRadioButton;
+    @FXML
+    private RadioButton tenYearsRadioButton;
+
+    private ToggleGroup group;
 
     @FXML
     void initialize() {
+
+        group = new ToggleGroup();
+
+        oneYearRadioButton.setSelected(true);
+        oneYearRadioButton.setToggleGroup(group);
+
+        fiveYearsRadioButton.setToggleGroup(group);
+
+        tenYearsRadioButton.setToggleGroup(group);
+
         ObservableList<Year> years = YearsDAO.getAllYears(false);
         periodFromChoiceBox.setItems(years);
         periodFromChoiceBox.getSelectionModel().select(0);
@@ -76,6 +94,20 @@ public class MainController {
     void onRunClicked() {
         System.out.println("Run clicked!");
 
+        int tickUnit;
+
+        switch (((RadioButton)group.getSelectedToggle()).getText()) {
+            case "Show results per 5 years":
+                tickUnit = 5;
+                break;
+            case "Show results per 10 years":
+                tickUnit = 10;
+                break;
+            default:
+                tickUnit = 1;
+                break;
+        }
+
         noDataLabel.setText("");
 
         ObservableList<Country> countriesSelected = countriesListView.getSelectionModel().getSelectedItems();
@@ -96,7 +128,7 @@ public class MainController {
         }
 
         noGraphLabel.setVisible(false);
-        int tickUnit = Math.floorDiv((upperBound - lowerBound), 10);
+        //int tickUnit = Math.floorDiv((upperBound - lowerBound), 10);
 
         VBox vbox = null;
 
@@ -133,8 +165,27 @@ public class MainController {
                         XYChart.Series dataSeries1 = new XYChart.Series();
                         dataSeries1.setName("Annual Income for " + countrySelected.getName());
 
-                        for (Income income : incomes) {
-                            dataSeries1.getData().add(new XYChart.Data(income.getYear().getYear(), income.getIncome()));
+                        for (int i=0; i<incomes.size(); i++) {
+                            int incomeSum = 0;
+                            if (tickUnit == 5) {
+                                if (i+5 < incomes.size()) {
+                                    for (int j=0; j<5; j++) {
+                                        incomeSum += incomes.get(i+j).getIncome();
+                                    }
+                                    i+=4;
+                                    dataSeries1.getData().add(new XYChart.Data(incomes.get(i).getYear().getYear(), incomeSum));
+                                }
+                            } else if (tickUnit == 10) {
+                                if (i+10 < incomes.size()) {
+                                    for (int j=0; j<10; j++) {
+                                        incomeSum += incomes.get(i+j).getIncome();
+                                    }
+                                    i+=9;
+                                    dataSeries1.getData().add(new XYChart.Data(incomes.get(i).getYear().getYear(), incomeSum));
+                                }
+                            } else {
+                                dataSeries1.getData().add(new XYChart.Data(incomes.get(i).getYear().getYear(), incomes.get(i).getIncome()));
+                            }
                         }
 
                         barChart.getData().add(dataSeries1);
@@ -142,8 +193,27 @@ public class MainController {
                         XYChart.Series dataSeries1 = new XYChart.Series();
                         dataSeries1.setName("Annual Population for " + countrySelected.getName());
 
-                        for (Population population : populations) {
-                            dataSeries1.getData().add(new XYChart.Data(population.getYear().getYear(), population.getPopulation()));
+                        for (int i=0; i<populations.size(); i++) {
+                            int populationSum = 0;
+                            if (tickUnit == 5) {
+                                if (i+5 < populations.size()) {
+                                    for (int j=0; j<5; j++) {
+                                        populationSum += populations.get(i+j).getPopulation();
+                                    }
+                                    i+=5;
+                                    dataSeries1.getData().add(new XYChart.Data(populations.get(i).getYear().getYear(), populationSum));
+                                }
+                            } else if (tickUnit == 10) {
+                                if (i+10 < populations.size()) {
+                                    for (int j=0; j<10; j++) {
+                                        populationSum += populations.get(i+j).getPopulation();
+                                    }
+                                    i+=10;
+                                    dataSeries1.getData().add(new XYChart.Data(populations.get(i).getYear().getYear(), populationSum));
+                                }
+                            } else {
+                                dataSeries1.getData().add(new XYChart.Data(populations.get(i).getYear().getYear(), populations.get(i).getPopulation()));
+                            }
                         }
 
                         barChart.getData().add(dataSeries1);
@@ -155,12 +225,35 @@ public class MainController {
 
                             XYChart.Series dataSeries2 = new XYChart.Series();
 
-                            for (Disaster disaster : disasters) {
-                                System.out.println(disaster.getYear().getYear() + " " + disaster.getDeaths());
-                                dataSeries2.setName("No of affected in a year for " + disaster.getCountry().getName() + " (" + disaster.getDisaster() + ")");
-                                dataSeries1.setName("No of deaths in a year for " + disaster.getCountry().getName() + " (" + disaster.getDisaster() + ")");
-                                dataSeries1.getData().add(new XYChart.Data(String.valueOf(disaster.getYear().getYear()), disaster.getDeaths()));
-                                dataSeries2.getData().add(new XYChart.Data(String.valueOf(disaster.getYear().getYear()), disaster.getAffected()));
+                            for (int i=0; i<disasters.size(); i++) {
+                                int disasterDeathsSum = 0;
+                                int disasterAffectedSum = 0;
+                                dataSeries2.setName("No of affected in a year for " + disasters.get(i).getCountry().getName() + " (" + disasters.get(i).getDisaster() + ")");
+                                dataSeries1.setName("No of deaths in a year for " + disasters.get(i).getCountry().getName() + " (" + disasters.get(i).getDisaster() + ")");
+                                if (tickUnit == 5) {
+                                    if (i+5 < disasters.size()) {
+                                        for (int j=0; j<5; j++) {
+                                            disasterDeathsSum += disasters.get(i+j).getDeaths();
+                                            disasterAffectedSum += disasters.get(i+j).getAffected();
+                                        }
+                                        i+=5;
+                                        dataSeries1.getData().add(new XYChart.Data(String.valueOf(disasters.get(i).getYear().getYear()), disasterDeathsSum));
+                                        dataSeries2.getData().add(new XYChart.Data(String.valueOf(disasters.get(i).getYear().getYear()), disasterAffectedSum));
+                                    }
+                                } else if (tickUnit == 10) {
+                                    if (i+10 < disasters.size()) {
+                                        for (int j=0; j<10; j++) {
+                                            disasterDeathsSum += disasters.get(i+j).getDeaths();
+                                            disasterAffectedSum += disasters.get(i+j).getAffected();
+                                        }
+                                        i+=10;
+                                        dataSeries1.getData().add(new XYChart.Data(String.valueOf(disasters.get(i).getYear().getYear()), disasterDeathsSum));
+                                        dataSeries2.getData().add(new XYChart.Data(String.valueOf(disasters.get(i).getYear().getYear()), disasterAffectedSum));
+                                    }
+                                } else {
+                                    dataSeries1.getData().add(new XYChart.Data(String.valueOf(disasters.get(i).getYear().getYear()), disasters.get(i).getDeaths()));
+                                    dataSeries2.getData().add(new XYChart.Data(String.valueOf(disasters.get(i).getYear().getYear()), disasters.get(i).getAffected()));
+                                }
                             }
 
                             barChart.getData().add(dataSeries1);
@@ -260,8 +353,27 @@ public class MainController {
                         XYChart.Series dataSeries1 = new XYChart.Series();
                         dataSeries1.setName("Annual Income for " + countrySelected.getName());
 
-                        for (Income income : incomes) {
-                            dataSeries1.getData().add(new XYChart.Data(income.getYear().getYear(), income.getIncome()));
+                        for (int i=0; i<incomes.size(); i++) {
+                            int incomeSum = 0;
+                            if (tickUnit == 5) {
+                                if (i+5 < incomes.size()) {
+                                    for (int j=0; j<5; j++) {
+                                        incomeSum += incomes.get(i+j).getIncome();
+                                    }
+                                    i+=4;
+                                    dataSeries1.getData().add(new XYChart.Data(incomes.get(i).getYear().getYear(), incomeSum));
+                                }
+                            } else if (tickUnit == 10) {
+                                if (i+10 < incomes.size()) {
+                                    for (int j=0; j<10; j++) {
+                                        incomeSum += incomes.get(i+j).getIncome();
+                                    }
+                                    i+=9;
+                                    dataSeries1.getData().add(new XYChart.Data(incomes.get(i).getYear().getYear(), incomeSum));
+                                }
+                            } else {
+                                dataSeries1.getData().add(new XYChart.Data(incomes.get(i).getYear().getYear(), incomes.get(i).getIncome()));
+                            }
                         }
 
                         lineChart.getData().add(dataSeries1);
@@ -269,8 +381,27 @@ public class MainController {
                         XYChart.Series dataSeries1 = new XYChart.Series();
                         dataSeries1.setName("Annual Population for " + countrySelected.getName());
 
-                        for (Population population : populations) {
-                            dataSeries1.getData().add(new XYChart.Data(population.getYear().getYear(), population.getPopulation()));
+                        for (int i=0; i<populations.size(); i++) {
+                            int populationSum = 0;
+                            if (tickUnit == 5) {
+                                if (i+5 < populations.size()) {
+                                    for (int j=0; j<5; j++) {
+                                        populationSum += populations.get(i+j).getPopulation();
+                                    }
+                                    i+=5;
+                                    dataSeries1.getData().add(new XYChart.Data(populations.get(i).getYear().getYear(), populationSum));
+                                }
+                            } else if (tickUnit == 10) {
+                                if (i+10 < populations.size()) {
+                                    for (int j=0; j<10; j++) {
+                                        populationSum += populations.get(i+j).getPopulation();
+                                    }
+                                    i+=10;
+                                    dataSeries1.getData().add(new XYChart.Data(populations.get(i).getYear().getYear(), populationSum));
+                                }
+                            } else {
+                                dataSeries1.getData().add(new XYChart.Data(populations.get(i).getYear().getYear(), populations.get(i).getPopulation()));
+                            }
                         }
 
                         lineChart.getData().add(dataSeries1);
@@ -282,12 +413,35 @@ public class MainController {
 
                             XYChart.Series dataSeries2 = new XYChart.Series();
 
-                            for (Disaster disaster : disasters) {
-                                System.out.println(disaster.getYear().getYear() + " " + disaster.getDeaths());
-                                dataSeries2.setName("No of affected in a year for " + disaster.getCountry().getName() + " (" + disaster.getDisaster() + ")");
-                                dataSeries1.setName("No of deaths in a year for " + disaster.getCountry().getName() + " (" + disaster.getDisaster() + ")");
-                                dataSeries1.getData().add(new XYChart.Data(disaster.getYear().getYear(), disaster.getDeaths()));
-                                dataSeries2.getData().add(new XYChart.Data(disaster.getYear().getYear(), disaster.getAffected()));
+                            for (int i=0; i<disasters.size(); i++) {
+                                int disasterDeathsSum = 0;
+                                int disasterAffectedSum = 0;
+                                dataSeries2.setName("No of affected in a year for " + disasters.get(i).getCountry().getName() + " (" + disasters.get(i).getDisaster() + ")");
+                                dataSeries1.setName("No of deaths in a year for " + disasters.get(i).getCountry().getName() + " (" + disasters.get(i).getDisaster() + ")");
+                                if (tickUnit == 5) {
+                                    if (i+5 < disasters.size()) {
+                                        for (int j=0; j<5; j++) {
+                                            disasterDeathsSum += disasters.get(i+j).getDeaths();
+                                            disasterAffectedSum += disasters.get(i+j).getAffected();
+                                        }
+                                        i+=5;
+                                        dataSeries1.getData().add(new XYChart.Data(String.valueOf(disasters.get(i).getYear().getYear()), disasterDeathsSum));
+                                        dataSeries2.getData().add(new XYChart.Data(String.valueOf(disasters.get(i).getYear().getYear()), disasterAffectedSum));
+                                    }
+                                } else if (tickUnit == 10) {
+                                    if (i+10 < disasters.size()) {
+                                        for (int j=0; j<10; j++) {
+                                            disasterDeathsSum += disasters.get(i+j).getDeaths();
+                                            disasterAffectedSum += disasters.get(i+j).getAffected();
+                                        }
+                                        i+=10;
+                                        dataSeries1.getData().add(new XYChart.Data(String.valueOf(disasters.get(i).getYear().getYear()), disasterDeathsSum));
+                                        dataSeries2.getData().add(new XYChart.Data(String.valueOf(disasters.get(i).getYear().getYear()), disasterAffectedSum));
+                                    }
+                                } else {
+                                    dataSeries1.getData().add(new XYChart.Data(String.valueOf(disasters.get(i).getYear().getYear()), disasters.get(i).getDeaths()));
+                                    dataSeries2.getData().add(new XYChart.Data(String.valueOf(disasters.get(i).getYear().getYear()), disasters.get(i).getAffected()));
+                                }
                             }
 
                             lineChart.getData().add(dataSeries1);
