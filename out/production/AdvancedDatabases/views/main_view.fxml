@@ -5,6 +5,7 @@
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
@@ -124,6 +125,24 @@
                            <Insets left="10.0" right="10.0" />
                        </padding>
                    </HBox>
+                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <RadioButton fx:id="oneYearRadioButton" mnemonicParsing="false" text="Show results per 1 year">
+                           <padding>
+                              <Insets right="20.0" />
+                           </padding>
+                        </RadioButton>
+                        <RadioButton fx:id="fiveYearsRadioButton" mnemonicParsing="false" text="Show results per 5 years">
+                           <padding>
+                              <Insets right="20.0" />
+                           </padding>
+                        </RadioButton>
+                        <RadioButton fx:id="tenYearsRadioButton" mnemonicParsing="false" text="Show results per 10 years" />
+                     </children>
+                     <VBox.margin>
+                        <Insets top="20.0" />
+                     </VBox.margin>
+                  </HBox>
                      <Button fx:id="runBtn" alignment="CENTER" mnemonicParsing="false" onAction="#onRunClicked" text="Build Graph" textAlignment="CENTER">
                          <font>
                              <Font size="17.0" />
