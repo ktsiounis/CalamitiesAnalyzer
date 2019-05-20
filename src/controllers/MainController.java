@@ -460,6 +460,147 @@ public class MainController {
             }
 
             vbox = new VBox(lineChart);
+        } else if (questionSelected.equals(QuestionAboutData.UNDERSTAND_WITH_SCATTER.toString())) {
+
+            NumberAxis xAxis = new NumberAxis(lowerBound, upperBound, tickUnit);
+            xAxis.setLabel("Years");
+
+            NumberAxis yAxis = new NumberAxis();
+            yAxis.setLabel("People");
+
+            ScatterChart scatterChart = new ScatterChart(xAxis, yAxis);
+
+            for (Country countrySelected : countriesSelected) {
+
+                for (String type : metricsSelected) {
+
+                    ObservableList<Disaster> disasters = FXCollections.observableArrayList();
+                    ObservableList<Income> incomes = FXCollections.observableArrayList();
+                    ObservableList<Population> populations = FXCollections.observableArrayList();
+
+                    switch (type.toLowerCase()) {
+                        case "income":
+                            incomes = IncomeDAO.getIncomeForCountryInAPeriod(lowerBound, upperBound, countrySelected.getName());
+                            break;
+                        case "population":
+                            populations = PopulationDAO.getPopulationForCountryInAPeriod(lowerBound, upperBound, countrySelected.getName());
+                            break;
+                        default:
+                            disasters = DisasterDAO.getDisasterForCountryInAPeriod(DisasterType.fromString(type), countrySelected.getName(), lowerBound, upperBound);
+                    }
+
+                    if (incomes.size()>0) {
+                        XYChart.Series dataSeries1 = new XYChart.Series();
+                        dataSeries1.setName("Annual Income for " + countrySelected.getName());
+
+                        for (int i=0; i<incomes.size(); i++) {
+                            int incomeSum = 0;
+                            if (tickUnit == 5) {
+                                if (i+5 < incomes.size()) {
+                                    for (int j=0; j<5; j++) {
+                                        incomeSum += incomes.get(i+j).getIncome();
+                                    }
+                                    i+=4;
+                                    dataSeries1.getData().add(new XYChart.Data(incomes.get(i).getYear().getYear(), incomeSum));
+                                }
+                            } else if (tickUnit == 10) {
+                                if (i+10 < incomes.size()) {
+                                    for (int j=0; j<10; j++) {
+                                        incomeSum += incomes.get(i+j).getIncome();
+                                    }
+                                    i+=9;
+                                    dataSeries1.getData().add(new XYChart.Data(incomes.get(i).getYear().getYear(), incomeSum));
+                                }
+                            } else {
+                                dataSeries1.getData().add(new XYChart.Data(incomes.get(i).getYear().getYear(), incomes.get(i).getIncome()));
+                            }
+                        }
+
+                        scatterChart.getData().add(dataSeries1);
+                    } else if (populations.size()>0) {
+                        XYChart.Series dataSeries1 = new XYChart.Series();
+                        dataSeries1.setName("Annual Population for " + countrySelected.getName());
+
+                        for (int i=0; i<populations.size(); i++) {
+                            int populationSum = 0;
+                            if (tickUnit == 5) {
+                                if (i+5 < populations.size()) {
+                                    for (int j=0; j<5; j++) {
+                                        populationSum += populations.get(i+j).getPopulation();
+                                    }
+                                    i+=5;
+                                    dataSeries1.getData().add(new XYChart.Data(populations.get(i).getYear().getYear(), populationSum));
+                                }
+                            } else if (tickUnit == 10) {
+                                if (i+10 < populations.size()) {
+                                    for (int j=0; j<10; j++) {
+                                        populationSum += populations.get(i+j).getPopulation();
+                                    }
+                                    i+=10;
+                                    dataSeries1.getData().add(new XYChart.Data(populations.get(i).getYear().getYear(), populationSum));
+                                }
+                            } else {
+                                dataSeries1.getData().add(new XYChart.Data(populations.get(i).getYear().getYear(), populations.get(i).getPopulation()));
+                            }
+                        }
+
+                        scatterChart.getData().add(dataSeries1);
+                    } else {
+
+                        if (!disasters.isEmpty()) {
+
+                            XYChart.Series dataSeries1 = new XYChart.Series();
+
+                            XYChart.Series dataSeries2 = new XYChart.Series();
+
+                            for (int i=0; i<disasters.size(); i++) {
+                                int disasterDeathsSum = 0;
+                                int disasterAffectedSum = 0;
+                                dataSeries2.setName("No of affected in a year for " + disasters.get(i).getCountry().getName() + " (" + disasters.get(i).getDisaster() + ")");
+                                dataSeries1.setName("No of deaths in a year for " + disasters.get(i).getCountry().getName() + " (" + disasters.get(i).getDisaster() + ")");
+                                if (tickUnit == 5) {
+                                    if (i+5 < disasters.size()) {
+                                        for (int j=0; j<5; j++) {
+                                            disasterDeathsSum += disasters.get(i+j).getDeaths();
+                                            disasterAffectedSum += disasters.get(i+j).getAffected();
+                                        }
+                                        i+=5;
+                                        dataSeries1.getData().add(new XYChart.Data(disasters.get(i).getYear().getYear(), disasterDeathsSum));
+                                        dataSeries2.getData().add(new XYChart.Data(disasters.get(i).getYear().getYear(), disasterAffectedSum));
+                                    }
+                                } else if (tickUnit == 10) {
+                                    if (i+10 < disasters.size()) {
+                                        for (int j=0; j<10; j++) {
+                                            disasterDeathsSum += disasters.get(i+j).getDeaths();
+                                            disasterAffectedSum += disasters.get(i+j).getAffected();
+                                        }
+                                        i+=10;
+                                        dataSeries1.getData().add(new XYChart.Data(disasters.get(i).getYear().getYear(), disasterDeathsSum));
+                                        dataSeries2.getData().add(new XYChart.Data(disasters.get(i).getYear().getYear(), disasterAffectedSum));
+                                    }
+                                } else {
+                                    dataSeries1.getData().add(new XYChart.Data(disasters.get(i).getYear().getYear(), disasters.get(i).getDeaths()));
+                                    dataSeries2.getData().add(new XYChart.Data(disasters.get(i).getYear().getYear(), disasters.get(i).getAffected()));
+                                }
+                            }
+
+                            scatterChart.getData().add(dataSeries1);
+                            scatterChart.getData().add(dataSeries2);
+
+                        } else {
+                            noDataLabel.setVisible(true);
+                            if (noDataLabel.getText().equals("")) {
+                                noDataLabel.setText("There were no data for " + countrySelected.getName());
+                            } else {
+                                noDataLabel.setText(noDataLabel.getText() + ", " + countrySelected.getName());
+                            }
+                        }
+                    }
+                }
+            }
+
+            vbox = new VBox(scatterChart);
+
         }
 
         if (vbox != null) {
