@@ -13,8 +13,8 @@ The project was developed with Java for the backend and ETL scripts, as well as 
 ##### Description
 We have some scripts written in Java than enable us to input .csv files transform them and output .txt files that are ready for ingestion by our MySQL database. Then we constructed a Java backend that allow us to query the database and fetch data for each destruction, and plot the desired charts for the filters that the user entered in our GUI.
 
-![GUI](/Users/saen/Desktop/Spring-Semester-2019/Advanced-Topics-of-Database-Technology-and-Applications/Project-Report/App.png)
+![GUI](static/App.png)
 
-![GUI2](/Users/saen/Desktop/Spring-Semester-2019/Advanced-Topics-of-Database-Technology-and-Applications/Project-Report/App2.png)
+![GUI2](static/App2.png)
 
-![GUI2](/Users/saen/Desktop/Spring-Semester-2019/Advanced-Topics-of-Database-Technology-and-Applications/Project-Report/App3.png)
+![GUI2](static/App3.png)
